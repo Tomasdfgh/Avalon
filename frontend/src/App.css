@@ -1,0 +1,373 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.button {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.button-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.button-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+}
+
+.button-success {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.button-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+}
+
+.button-disabled {
+  background: #475569;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.button-disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  background: #1e293b;
+  color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.room-code {
+  text-align: center;
+  padding: 25px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.room-code-label {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.room-code-value {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: #667eea;
+}
+
+.player-list {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.player-item {
+  padding: 15px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.host-badge {
+  background: #fbbf24;
+  color: #1a1a2e;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.character-badge {
+  background: #8b5cf6;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.character-button {
+  padding: 16px;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.character-button:hover:not(:disabled) {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.2);
+  transform: translateX(5px);
+}
+
+.character-button.selected {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.character-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.character-name {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.character-allegiance {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.reveal-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+.reveal-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 2px solid;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.reveal-card.good {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.reveal-card.evil {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.reveal-character {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.reveal-allegiance {
+  font-size: 1.2rem;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.reveal-message {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #cbd5e1;
+}
+
+.revealed-players {
+  margin-top: 20px;
+}
+
+.revealed-players h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #fbbf24;
+}
+
+.revealed-player {
+  padding: 12px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #94a3b8;
+}
+
+.checkbox-group {
+  margin: 20px 0;
+}
+
+.checkbox-group label {
+  display: block;
+  margin-bottom: 15px;
+  color: #cbd5e1;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.info-text {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+@media (max-width: 375px) {
+  .room-code-value {
+    font-size: 2.5rem;
+    letter-spacing: 6px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+}
