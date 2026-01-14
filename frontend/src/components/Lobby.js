@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getRoom, configureRoom } from '../services/api';
 
-function Lobby({ navigateTo }) {
-  const roomCode = localStorage.getItem('roomCode');
+function Lobby({ navigateTo, sessionData }) {
+  const { roomCode, playerId, isHost } = sessionData;
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [optionalCharacters, setOptionalCharacters] = useState([]);
-  const playerId = parseInt(localStorage.getItem('playerId'));
-  const isHost = localStorage.getItem('isHost') === 'true';
 
   const optionalCharactersList = [
     { name: 'Percival', description: 'Knows who Merlin is (Good)' },
@@ -17,17 +15,7 @@ function Lobby({ navigateTo }) {
     { name: 'Morgana', description: 'Appears as Merlin to Percival (Evil)' }
   ];
 
-  useEffect(() => {
-    if (!roomCode) {
-      navigateTo('home');
-      return;
-    }
-    fetchRoom();
-    const interval = setInterval(fetchRoom, 2000);
-    return () => clearInterval(interval);
-  }, [roomCode]);
-
-  const fetchRoom = async () => {
+  const fetchRoom = useCallback(async () => {
     try {
       const data = await getRoom(roomCode);
       setRoom(data.room);
@@ -43,7 +31,17 @@ function Lobby({ navigateTo }) {
       setError(err.response?.data?.error || 'Failed to fetch room');
       setLoading(false);
     }
-  };
+  }, [roomCode, navigateTo]);
+
+  useEffect(() => {
+    if (!roomCode) {
+      navigateTo('home');
+      return;
+    }
+    fetchRoom();
+    const interval = setInterval(fetchRoom, 2000);
+    return () => clearInterval(interval);
+  }, [roomCode, navigateTo, fetchRoom]);
 
   const handleToggleCharacter = (characterName) => {
     setOptionalCharacters(prev =>

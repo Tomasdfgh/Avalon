@@ -1,28 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getRoom, getAvailableCharacters, selectCharacter, startGame } from '../services/api';
 
-function CharacterSelection({ navigateTo }) {
-  const roomCode = localStorage.getItem('roomCode');
+function CharacterSelection({ navigateTo, sessionData }) {
+  const { roomCode, playerId, playerName, isHost } = sessionData;
   const [room, setRoom] = useState(null);
   const [availableCharacters, setAvailableCharacters] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const playerId = parseInt(localStorage.getItem('playerId'));
-  const playerName = localStorage.getItem('playerName');
-  const isHost = localStorage.getItem('isHost') === 'true';
 
-  useEffect(() => {
-    if (!roomCode) {
-      navigateTo('home');
-      return;
-    }
-    fetchData();
-    const interval = setInterval(fetchData, 2000);
-    return () => clearInterval(interval);
-  }, [roomCode]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [roomData, charsData] = await Promise.all([
         getRoom(roomCode),
@@ -48,7 +35,17 @@ function CharacterSelection({ navigateTo }) {
       setError(err.response?.data?.error || 'Failed to fetch data');
       setLoading(false);
     }
-  };
+  }, [roomCode, playerId, navigateTo]);
+
+  useEffect(() => {
+    if (!roomCode) {
+      navigateTo('home');
+      return;
+    }
+    fetchData();
+    const interval = setInterval(fetchData, 2000);
+    return () => clearInterval(interval);
+  }, [roomCode, navigateTo, fetchData]);
 
   const handleSelectCharacter = async (character) => {
     setLoading(true);

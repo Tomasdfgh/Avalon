@@ -20,11 +20,12 @@ function Home({ navigateTo }) {
 
     try {
       const data = await createRoom(playerName.trim());
-      localStorage.setItem('playerId', data.player.id);
-      localStorage.setItem('playerName', data.player.player_name);
-      localStorage.setItem('roomCode', data.room.room_code);
-      localStorage.setItem('isHost', 'true');
-      navigateTo('lobby');
+      navigateTo('lobby', {
+        playerId: data.player.id,
+        playerName: data.player.player_name,
+        roomCode: data.room.room_code,
+        isHost: true
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create room');
     } finally {
@@ -48,11 +49,12 @@ function Home({ navigateTo }) {
 
     try {
       const data = await joinRoom(roomCode.trim(), playerName.trim());
-      localStorage.setItem('playerId', data.player.id);
-      localStorage.setItem('playerName', data.player.player_name);
-      localStorage.setItem('roomCode', data.room.room_code);
-      localStorage.setItem('isHost', 'false');
-      navigateTo('lobby');
+      navigateTo('lobby', {
+        playerId: data.player.id,
+        playerName: data.player.player_name,
+        roomCode: data.room.room_code,
+        isHost: false
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to join room');
     } finally {
@@ -65,8 +67,11 @@ function Home({ navigateTo }) {
       <div className="app">
         <div className="container">
           <div className="header">
-            <h1>Avalon Helper</h1>
-            <p>Digital character reveal for The Resistance: Avalon</p>
+            <h1>Avalon At Tom's</h1>
+          </div>
+
+          <div className="home-image">
+            <img src="/avalon_helper.png" alt="Avalon At Tom's" />
           </div>
 
           <button

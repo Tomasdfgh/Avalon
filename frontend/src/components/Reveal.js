@@ -1,23 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getPlayerReveal } from '../services/api';
 
-function Reveal({ navigateTo }) {
-  const playerId = localStorage.getItem('playerId');
+function Reveal({ navigateTo, sessionData, clearSession }) {
+  const { playerId, playerName } = sessionData;
   const [reveals, setReveals] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isRevealed, setIsRevealed] = useState(false);
-  const playerName = localStorage.getItem('playerName');
 
-  useEffect(() => {
-    if (!playerId || playerId === 'null') {
-      navigateTo('home');
-      return;
-    }
-    fetchReveal();
-  }, [playerId]);
-
-  const fetchReveal = async () => {
+  const fetchReveal = useCallback(async () => {
     try {
       const data = await getPlayerReveal(playerId);
       setReveals(data.reveals);
@@ -26,15 +17,22 @@ function Reveal({ navigateTo }) {
       setError(err.response?.data?.error || 'Failed to fetch reveal information');
       setLoading(false);
     }
-  };
+  }, [playerId]);
+
+  useEffect(() => {
+    if (!playerId) {
+      navigateTo('home');
+      return;
+    }
+    fetchReveal();
+  }, [playerId, navigateTo, fetchReveal]);
 
   const handleReveal = () => {
     setIsRevealed(true);
   };
 
   const handleBackToHome = () => {
-    localStorage.clear();
-    navigateTo('home');
+    clearSession();
   };
 
   if (loading) {
@@ -101,9 +99,9 @@ function Reveal({ navigateTo }) {
           {reveals.revealed_players && reveals.revealed_players.length > 0 && (
             <div className="revealed-players">
               <h3>You know these players:</h3>
-              {reveals.revealed_players.map((playerName, index) => (
+              {reveals.revealed_players.map((name, index) => (
                 <div key={index} className="revealed-player">
-                  {playerName}
+                  {name}
                 </div>
               ))}
             </div>
