@@ -101,15 +101,11 @@ def get_room(room_code):
     return rooms.get(room_code)
 
 
-def get_room_with_players(room_code, cleanup=True):
+def get_room_with_players(room_code, cleanup=False):
     """Get room with full player list."""
     room = rooms.get(room_code)
     if not room:
         return None
-
-    # Clean up stale players before returning room data
-    if cleanup:
-        cleanup_stale_players(room_code)
 
     room_data = dict(room)
     room_data['players'] = [players[pid] for pid in room['player_ids']]
@@ -266,5 +262,51 @@ def reset_game(room_code, player_id):
 
     # Reset room status to character selection
     room['status'] = 'character_selection'
+
+    return room, None
+
+
+def kick_player(room_code, host_player_id, player_id_to_kick):
+    """Kick a player from the room (host only)."""
+    room = rooms.get(room_code)
+    if not room:
+        return None, 'Room not found'
+
+    if room['host_player_id'] != host_player_id:
+        return None, 'Only the host can kick players'
+
+    if player_id_to_kick == host_player_id:
+        return None, 'Cannot kick yourself'
+
+    if player_id_to_kick not in room['player_ids']:
+        return None, 'Player not in this room'
+
+    # Remove player from room
+    room['player_ids'].remove(player_id_to_kick)
+    room['player_count'] = len(room['player_ids'])
+
+    # Remove player data
+    if player_id_to_kick in players:
+        del players[player_id_to_kick]
+
+    return room, None
+
+
+def back_to_lobby(room_code, player_id):
+    """Go back to lobby/waiting stage (host only)."""
+    room = rooms.get(room_code)
+    if not room:
+        return None, 'Room not found'
+
+    if room['host_player_id'] != player_id:
+        return None, 'Only the host can change room status'
+
+    # Clear all player character selections
+    for pid in room['player_ids']:
+        if pid in players:
+            players[pid]['character_role'] = None
+
+    # Reset room status to waiting
+    room['status'] = 'waiting'
 
     return room, None

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getRoom, configureRoom } from '../services/api';
+import { getRoom, configureRoom, kickPlayer } from '../services/api';
 
 function Lobby({ navigateTo, sessionData, clearSession }) {
   const { roomCode, playerId, isHost } = sessionData;
@@ -18,6 +18,14 @@ function Lobby({ navigateTo, sessionData, clearSession }) {
   const fetchRoom = useCallback(async () => {
     try {
       const data = await getRoom(roomCode, playerId);
+
+      // Check if current player was kicked
+      const currentPlayerInRoom = data.room.players.find(p => p.id === playerId);
+      if (!currentPlayerInRoom) {
+        clearSession();
+        return;
+      }
+
       setRoom(data.room);
       setLoading(false);
 
@@ -31,7 +39,7 @@ function Lobby({ navigateTo, sessionData, clearSession }) {
       setError(err.response?.data?.error || 'Failed to fetch room');
       setLoading(false);
     }
-  }, [roomCode, playerId, navigateTo]);
+  }, [roomCode, playerId, navigateTo, clearSession]);
 
   useEffect(() => {
     if (!roomCode) {
@@ -66,6 +74,15 @@ function Lobby({ navigateTo, sessionData, clearSession }) {
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to configure room');
       setLoading(false);
+    }
+  };
+
+  const handleKick = async (playerIdToKick) => {
+    try {
+      await kickPlayer(roomCode, playerId, playerIdToKick);
+      fetchRoom();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to kick player');
     }
   };
 
@@ -105,7 +122,21 @@ function Lobby({ navigateTo, sessionData, clearSession }) {
             {room?.players?.map((player) => (
               <li key={player.id} className="player-item">
                 <span className="player-name">{player.player_name}</span>
-                {player.is_host && <span className="host-badge">Host</span>}
+                <div className="player-actions">
+                  {player.is_host && <span className="host-badge">Host</span>}
+                  {isHost && !player.is_host && (
+                    <button
+                      className="kick-btn"
+                      onClick={() => handleKick(player.id)}
+                      aria-label={`Kick ${player.player_name}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

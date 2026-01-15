@@ -58,4 +58,17 @@ export const resetGame = async (roomCode, playerId) => {
   return response.data;
 };
 
+export const kickPlayer = async (roomCode, playerId, kickPlayerId) => {
+  const response = await api.post(`/rooms/${roomCode}/kick`, {
+    player_id: playerId,
+    kick_player_id: kickPlayerId
+  });
+  return response.data;
+};
+
+export const backToLobby = async (roomCode, playerId) => {
+  const response = await api.post(`/rooms/${roomCode}/back-to-lobby`, { player_id: playerId });
+  return response.data;
+};
+
 export default api;

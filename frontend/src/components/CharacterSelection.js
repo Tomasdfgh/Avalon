@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getRoom, getAvailableCharacters, selectCharacter, startGame } from '../services/api';
+import { getRoom, getAvailableCharacters, selectCharacter, startGame, kickPlayer, backToLobby } from '../services/api';
 
 function CharacterSelection({ navigateTo, sessionData, clearSession }) {
   const { roomCode, playerId, playerName, isHost } = sessionData;
@@ -18,11 +18,20 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
         getAvailableCharacters(roomCode)
       ]);
 
+      // Clear any previous errors on successful fetch
+      setError('');
+
+      // Check if current player was kicked
+      const currentPlayer = roomData.room.players.find(p => p.id === playerId);
+      if (!currentPlayer) {
+        clearSession();
+        return;
+      }
+
       setRoom(roomData.room);
       setAvailableCharacters(charsData);
 
       // Find current player's character
-      const currentPlayer = roomData.room.players.find(p => p.id === playerId);
       if (currentPlayer?.character_role) {
         setSelectedCharacter(currentPlayer.character_role);
         setPickerValue(currentPlayer.character_role);
@@ -40,9 +49,11 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
         }
       }
 
-      // Navigate to reveal if game started
+      // Navigate based on room status
       if (roomData.room.status === 'started') {
         navigateTo('reveal');
+      } else if (roomData.room.status === 'waiting') {
+        navigateTo('lobby');
       }
 
       setLoading(false);
@@ -50,7 +61,7 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
       setError(err.response?.data?.error || 'Failed to fetch data');
       setLoading(false);
     }
-  }, [roomCode, playerId, navigateTo]);
+  }, [roomCode, playerId, navigateTo, clearSession]);
 
   useEffect(() => {
     if (!roomCode) {
@@ -109,6 +120,28 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
     }
   };
 
+  const handleKick = async (playerIdToKick) => {
+    try {
+      await kickPlayer(roomCode, playerId, playerIdToKick);
+      fetchData();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to kick player');
+    }
+  };
+
+  const handleBackToLobby = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      await backToLobby(roomCode, playerId);
+      navigateTo('lobby');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to go back to lobby');
+      setLoading(false);
+    }
+  };
+
   const allPlayersReady = () => {
     return room?.players?.every(p => p.character_role !== null);
   };
@@ -135,19 +168,21 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
   const currentChar = allCharacters[currentIndex] || { name: '', allegiance: '' };
 
   const handlePrev = () => {
+    if (allCharacters.length === 0) return;
     setCurrentIndex(prev => {
       const newIndex = prev <= 0 ? allCharacters.length - 1 : prev - 1;
       const char = allCharacters[newIndex];
-      setPickerValue(char.name);
+      if (char) setPickerValue(char.name);
       return newIndex;
     });
   };
 
   const handleNext = () => {
+    if (allCharacters.length === 0) return;
     setCurrentIndex(prev => {
       const newIndex = prev >= allCharacters.length - 1 ? 0 : prev + 1;
       const char = allCharacters[newIndex];
-      setPickerValue(char.name);
+      if (char) setPickerValue(char.name);
       return newIndex;
     });
   };
@@ -187,9 +222,24 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
             {room?.players?.map((player) => (
               <li key={player.id} className="player-item">
                 <span className="player-name">{player.player_name}</span>
-                {player.character_role && (
-                  <span className="character-badge">Ready</span>
-                )}
+                <div className="player-actions">
+                  {player.is_host && <span className="host-badge">Host</span>}
+                  {player.character_role && (
+                    <span className="character-badge">Ready</span>
+                  )}
+                  {isHost && !player.is_host && (
+                    <button
+                      className="kick-btn"
+                      onClick={() => handleKick(player.id)}
+                      aria-label={`Kick ${player.player_name}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
@@ -284,10 +334,21 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
           </p>
         )}
 
+        {isHost && (
+          <button
+            className="button button-primary"
+            onClick={handleBackToLobby}
+            disabled={loading}
+            style={{ marginTop: '16px' }}
+          >
+            Back to Lobby
+          </button>
+        )}
+
         <button
           className="button button-secondary"
           onClick={clearSession}
-          style={{ marginTop: '20px' }}
+          style={{ marginTop: '16px' }}
         >
           Exit Room
         </button>

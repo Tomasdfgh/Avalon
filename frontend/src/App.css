@@ -477,6 +477,43 @@ body::after {
   letter-spacing: 0.03em;
 }
 
+.player-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kick-btn {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border: 1px solid var(--danger);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(155, 35, 53, 0.3) 0%, rgba(155, 35, 53, 0.2) 100%);
+  color: #ff9999;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kick-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.kick-btn:hover {
+  background: linear-gradient(180deg, rgba(155, 35, 53, 0.5) 0%, rgba(155, 35, 53, 0.4) 100%);
+  border-color: #ff6666;
+  color: #ffcccc;
+  box-shadow: 0 0 10px rgba(155, 35, 53, 0.4);
+}
+
+.kick-btn:active {
+  transform: scale(0.95);
+}
+
 /* Host badge - Crown/royal seal */
 .host-badge {
   font-family: 'Cinzel', serif;
@@ -776,6 +813,7 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 24px;
 }
 
 .wheel-picker-row {
@@ -791,7 +829,8 @@ body::after {
   border: 2px solid var(--gold);
   border-radius: 6px;
   padding: 20px 24px;
-  min-width: 280px;
+  min-width: 240px;
+  max-width: 90%;
   box-shadow:
     0 8px 25px rgba(0, 0, 0, 0.5),
     inset 0 0 30px rgba(0, 0, 0, 0.4);

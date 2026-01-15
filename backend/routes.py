@@ -241,6 +241,50 @@ def reset_game(room_code):
         return jsonify({'error': str(e)}), 500
 
 
+@api.route('/rooms/<room_code>/back-to-lobby', methods=['POST'])
+def back_to_lobby(room_code):
+    """Go back to lobby/waiting stage (host only)."""
+    try:
+        data = request.json
+        player_id = data.get('player_id')
+
+        room, error = storage.back_to_lobby(room_code, player_id)
+
+        if error:
+            status_code = 404 if error == 'Room not found' else 403
+            return jsonify({'error': error}), status_code
+
+        room_data = storage.get_room_with_players(room_code)
+        return jsonify({'room': room_data}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@api.route('/rooms/<room_code>/kick', methods=['POST'])
+def kick_player(room_code):
+    """Kick a player from the room (host only)."""
+    try:
+        data = request.json
+        host_player_id = data.get('player_id')
+        player_id_to_kick = data.get('kick_player_id')
+
+        if not host_player_id or not player_id_to_kick:
+            return jsonify({'error': 'player_id and kick_player_id are required'}), 400
+
+        room, error = storage.kick_player(room_code, host_player_id, player_id_to_kick)
+
+        if error:
+            status_code = 404 if error == 'Room not found' else 403 if 'host' in error else 400
+            return jsonify({'error': error}), status_code
+
+        room_data = storage.get_room_with_players(room_code)
+        return jsonify({'room': room_data}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @api.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""
