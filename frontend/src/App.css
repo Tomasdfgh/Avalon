@@ -1,3 +1,31 @@
+/* Medieval English Theme for Avalon */
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;600;700&family=Uncial+Antiqua&display=swap');
+
+:root {
+  color-scheme: dark;
+  --text-primary: #f4e4c1;
+  --text-secondary: rgba(244, 228, 193, 0.75);
+  --card-bg: rgba(35, 25, 15, 0.92);
+  --card-border: #8b6914;
+  --muted-surface: rgba(139, 105, 20, 0.15);
+  --accent-primary: #d4a437;
+  --accent-secondary: #8b2942;
+  --accent-deep: #1a3a52;
+  --danger: #9b2335;
+  --success: #2d5a3d;
+  --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.7);
+  --gold: #d4a437;
+  --gold-light: #f0c85a;
+  --burgundy: #6b1c2a;
+  --burgundy-dark: #4a1320;
+  --parchment: #e8d5a3;
+  --parchment-dark: #c4a86c;
+  --wood-dark: #3d2817;
+  --wood-medium: #5c3d24;
+  --metal-dark: #3a3a3a;
+  --metal-light: #6a6a6a;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,266 +33,519 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Cinzel', 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   min-height: 100vh;
-  color: #fff;
+  color: var(--text-primary);
+  /* Background set in index.html to reference public folder */
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at top, rgba(139, 105, 20, 0.15), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(107, 28, 42, 0.12), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Torch flicker animation for ambient effect */
+@keyframes torchFlicker {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.12; }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 150, 50, 0.15), transparent 30%),
+              radial-gradient(circle at 90% 20%, rgba(255, 150, 50, 0.15), transparent 30%);
+  pointer-events: none;
+  z-index: 0;
+  animation: torchFlicker 3s ease-in-out infinite;
 }
 
 .app {
-  max-width: 480px;
+  max-width: 640px;
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding: 32px 20px 40px;
+  position: relative;
+  z-index: 1;
 }
 
+/* Main container - Parchment scroll style */
 .container {
-  padding: 20px;
+  padding: 32px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  background:
+    linear-gradient(to bottom, rgba(45, 35, 20, 0.97), rgba(35, 25, 15, 0.98)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  border: 4px solid var(--gold);
+  border-radius: 8px;
+  box-shadow:
+    var(--shadow-strong),
+    inset 0 0 60px rgba(0, 0, 0, 0.5),
+    0 0 0 2px var(--wood-dark),
+    0 0 0 6px var(--gold-light),
+    0 0 0 8px var(--wood-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative corner flourishes */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(212, 164, 55, 0.3);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(212, 164, 55, 0.1) 0%, transparent 30%),
+    radial-gradient(circle at top right, rgba(212, 164, 55, 0.1) 0%, transparent 30%),
+    radial-gradient(circle at bottom left, rgba(212, 164, 55, 0.1) 0%, transparent 30%),
+    radial-gradient(circle at bottom right, rgba(212, 164, 55, 0.1) 0%, transparent 30%);
+  pointer-events: none;
 }
 
 .home-container {
-  padding-top: 40px;
+  padding-top: 24px;
 }
 
+/* Header - Medieval banner style */
 .header {
   text-align: center;
-  margin-bottom: 30px;
-  padding: 20px 0;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--gold);
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 12px;
+  background: var(--gold);
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
 }
 
 .home-container .header {
   margin-bottom: 20px;
-  padding-top: 5px;
-  padding-bottom: 10px;
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  background: linear-gradient(45deg, #ffd700, #ffed4e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 10px;
+  font-family: 'MedievalSharp', 'Cinzel', serif;
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+  color: var(--gold-light);
+  text-shadow:
+    2px 2px 0 var(--wood-dark),
+    0 0 30px rgba(212, 164, 55, 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
 }
 
 .header p {
-  color: #94a3b8;
-  font-size: 0.9rem;
+  font-family: 'Cinzel', serif;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-style: italic;
+  letter-spacing: 0.05em;
 }
 
+/* Home image - framed like a medieval painting */
 .home-image {
   text-align: center;
   margin-bottom: 30px;
 }
 
 .home-image img {
-  max-width: 65%;
+  max-width: 55%;
   height: auto;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-.button {
-  width: 100%;
-  padding: 16px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 15px;
+  border-radius: 4px;
+  border: 4px solid var(--gold);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 0 2px var(--wood-dark),
+    0 0 0 6px var(--parchment-dark);
+  background: var(--parchment);
 }
 
 .home-actions {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 0 20px;
+  gap: 10px;
+  padding: 0 10px;
 }
 
 .home-actions .button {
   width: 100%;
-  padding: 16px;
-  font-size: 1.1rem;
-  margin-bottom: 0;
+  border-radius: 6px;
 }
 
+/* Buttons - Medieval wooden/metal shield style */
+.button {
+  width: 100%;
+  padding: 16px 18px;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 2px solid var(--gold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: linear-gradient(180deg, var(--wood-medium) 0%, var(--wood-dark) 100%);
+  color: var(--text-primary);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.button::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 164, 55, 0.5), transparent);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 2px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 15px rgba(212, 164, 55, 0.3);
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.button + .button {
+  margin-top: 16px;
+}
+
+/* Primary button - Royal blue/gold knight theme */
 .button-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(180deg, #2a4a6b 0%, #1a3a52 50%, #0f2538 100%);
+  border-color: var(--gold);
+  color: var(--gold-light);
 }
 
 .button-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(180deg, #3a5a7b 0%, #2a4a62 50%, #1a3a52 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(42, 74, 107, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Secondary button - Burgundy/crimson theme */
 .button-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  background: linear-gradient(180deg, #7a2838 0%, #5a1c28 50%, #3a1018 100%);
+  border-color: var(--gold);
+  color: var(--parchment);
 }
 
 .button-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+  background: linear-gradient(180deg, #8a3848 0%, #6a2c38 50%, #4a2028 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(122, 40, 56, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Success button - Forest green heraldic */
 .button-success {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
+  background: linear-gradient(180deg, #3d6a4d 0%, #2d5a3d 50%, #1d4a2d 100%);
+  border-color: var(--gold);
+  color: var(--gold-light);
 }
 
 .button-success:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+  background: linear-gradient(180deg, #4d7a5d 0%, #3d6a4d 50%, #2d5a3d 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(45, 90, 61, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Disabled button - Weathered stone */
 .button-disabled {
-  background: #475569;
-  color: #94a3b8;
+  background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  color: rgba(244, 228, 193, 0.4);
+  border-color: rgba(139, 105, 20, 0.3);
   cursor: not-allowed;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
 .button-disabled:hover {
   transform: none;
-  box-shadow: none;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
+/* Input fields - Parchment inscription style */
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .input-group label {
   display: block;
   margin-bottom: 8px;
-  color: #cbd5e1;
-  font-weight: 500;
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .input-group input {
   width: 100%;
-  padding: 14px;
+  padding: 15px 16px;
+  font-family: 'Cinzel', serif;
   font-size: 1rem;
-  border: 2px solid #334155;
-  border-radius: 8px;
-  background: #1e293b;
-  color: #fff;
-  transition: border-color 0.3s ease;
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(232, 213, 163, 0.12) 0%, rgba(196, 168, 108, 0.08) 100%);
+  color: var(--text-primary);
+  transition: all 0.25s ease;
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.input-group input::placeholder {
+  color: rgba(244, 228, 193, 0.4);
+  font-style: italic;
 }
 
 .input-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--gold-light);
+  background: linear-gradient(180deg, rgba(232, 213, 163, 0.18) 0%, rgba(196, 168, 108, 0.12) 100%);
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(212, 164, 55, 0.4);
 }
 
+/* Cards - Medieval parchment/scroll style */
 .card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 15px;
-  backdrop-filter: blur(10px);
+  background: linear-gradient(180deg, rgba(60, 45, 25, 0.95) 0%, rgba(45, 35, 20, 0.98) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
+.card::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid rgba(212, 164, 55, 0.2);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Room code - Royal wax seal style */
 .room-code {
   text-align: center;
-  padding: 25px;
-  background: rgba(102, 126, 234, 0.1);
-  border: 2px solid #667eea;
-  border-radius: 12px;
-  margin: 20px 0;
+  padding: 28px;
+  background:
+    radial-gradient(ellipse at center, rgba(139, 41, 66, 0.3) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(74, 19, 32, 0.9) 0%, rgba(58, 16, 24, 0.95) 100%);
+  border: 3px solid var(--gold);
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(0, 0, 0, 0.4),
+    0 0 0 4px var(--burgundy-dark),
+    0 0 0 8px var(--gold);
+  position: relative;
+}
+
+.room-code::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(212, 164, 55, 0.3);
+  border-radius: 50%;
 }
 
 .room-code-label {
-  color: #94a3b8;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
+  font-family: 'Cinzel', serif;
+  color: var(--gold-light);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
 }
 
 .room-code-value {
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: 8px;
-  color: #667eea;
+  font-family: 'Uncial Antiqua', 'MedievalSharp', serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  letter-spacing: 0.3rem;
+  color: var(--gold-light);
+  text-shadow:
+    2px 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(212, 164, 55, 0.5);
 }
 
+/* Player list - Medieval roster */
 .player-list {
   list-style: none;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .player-item {
-  padding: 15px;
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid #334155;
-  border-radius: 8px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(212, 164, 55, 0.4);
+  border-left: 4px solid var(--gold);
+  border-radius: 4px;
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.player-item:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: var(--gold);
 }
 
 .player-name {
+  font-family: 'Cinzel', serif;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
 }
 
+/* Host badge - Crown/royal seal */
 .host-badge {
-  background: #fbbf24;
-  color: #1a1a2e;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+  color: var(--wood-dark);
+  padding: 4px 14px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--wood-dark);
 }
 
+/* Character badge - Heraldic emblem */
 .character-badge {
-  background: #8b5cf6;
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  font-family: 'Cinzel', serif;
+  background: linear-gradient(180deg, #3d6a4d 0%, #2d5a3d 100%);
+  color: var(--gold-light);
+  padding: 4px 14px;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--gold);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
+/* Character grid */
 .character-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 22px;
 }
 
+/* Character button - Shield style */
 .character-button {
-  padding: 16px;
-  border: 2px solid #334155;
-  border-radius: 8px;
-  background: rgba(30, 41, 59, 0.6);
-  color: #fff;
+  padding: 18px;
+  border: 2px solid rgba(212, 164, 55, 0.5);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(60, 45, 25, 0.8) 0%, rgba(45, 35, 20, 0.9) 100%);
+  color: var(--text-primary);
+  font-family: 'Cinzel', serif;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-align: left;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .character-button:hover:not(:disabled) {
-  border-color: #667eea;
-  background: rgba(102, 126, 234, 0.2);
-  transform: translateX(5px);
+  border-color: var(--gold);
+  background: linear-gradient(180deg, rgba(80, 60, 35, 0.9) 0%, rgba(60, 45, 25, 0.95) 100%);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(212, 164, 55, 0.2);
 }
 
 .character-button.selected {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--gold-light);
+  background: linear-gradient(180deg, rgba(45, 90, 61, 0.9) 0%, rgba(35, 70, 45, 0.95) 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(45, 90, 61, 0.4);
 }
 
 .character-button:disabled {
@@ -276,14 +557,17 @@ body {
   display: block;
   font-size: 1.1rem;
   margin-bottom: 4px;
+  color: var(--gold-light);
 }
 
 .character-allegiance {
   display: block;
   font-size: 0.85rem;
-  opacity: 0.7;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
+/* Reveal container */
 .reveal-container {
   flex: 1;
   display: flex;
@@ -292,215 +576,368 @@ body {
   padding: 20px;
 }
 
+/* Reveal card - Heraldic banner style */
 .reveal-card {
-  background: rgba(30, 41, 59, 0.8);
-  border: 2px solid;
-  border-radius: 16px;
-  padding: 30px;
+  background: linear-gradient(180deg, rgba(45, 35, 20, 0.95) 0%, rgba(35, 25, 15, 0.98) 100%);
+  border: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 32px;
   text-align: center;
   margin-bottom: 20px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
+.reveal-card::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(212, 164, 55, 0.3);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Good allegiance - Knight's blue banner */
 .reveal-card.good {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.1);
+  background:
+    radial-gradient(ellipse at center, rgba(42, 74, 107, 0.3) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(26, 58, 82, 0.95) 0%, rgba(15, 37, 56, 0.98) 100%);
+  border-color: var(--gold);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(42, 74, 107, 0.3),
+    inset 0 0 40px rgba(0, 0, 0, 0.3);
 }
 
+/* Evil allegiance - Dark crimson banner */
 .reveal-card.evil {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
+  background:
+    radial-gradient(ellipse at center, rgba(107, 28, 42, 0.4) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(74, 19, 32, 0.95) 0%, rgba(58, 16, 24, 0.98) 100%);
+  border-color: var(--gold);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(107, 28, 42, 0.3),
+    inset 0 0 40px rgba(0, 0, 0, 0.3);
 }
 
 .reveal-character {
+  font-family: 'MedievalSharp', 'Cinzel', serif;
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  color: var(--gold-light);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .reveal-allegiance {
-  font-size: 1.2rem;
-  opacity: 0.8;
+  font-family: 'Cinzel', serif;
+  font-size: 1.15rem;
   margin-bottom: 20px;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .reveal-message {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
   margin-bottom: 20px;
-  color: #cbd5e1;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
+/* Revealed players - Allied knights */
 .revealed-players {
   margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(212, 164, 55, 0.3);
 }
 
 .revealed-players h3 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  color: #fbbf24;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .revealed-player {
-  padding: 12px;
-  background: rgba(251, 191, 36, 0.1);
-  border: 1px solid #fbbf24;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, rgba(212, 164, 55, 0.15) 0%, rgba(212, 164, 55, 0.08) 100%);
+  border: 1px solid rgba(212, 164, 55, 0.5);
+  border-left: 4px solid var(--gold);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.03em;
 }
 
+/* Error message - Crimson warning */
 .error {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid #ef4444;
-  color: #fca5a5;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  font-family: 'Cinzel', serif;
+  background: linear-gradient(180deg, rgba(155, 35, 53, 0.25) 0%, rgba(155, 35, 53, 0.15) 100%);
+  border: 2px solid #9b2335;
+  color: #ff9999;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
   text-align: center;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 15px rgba(155, 35, 53, 0.3);
 }
 
+/* Loading - Medieval scroll */
 .loading {
+  font-family: 'Cinzel', serif;
   text-align: center;
   padding: 40px;
-  font-size: 1.2rem;
-  color: #94a3b8;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  font-style: italic;
 }
 
+/* Checkbox group - Medieval selection */
 .checkbox-group {
-  margin: 20px 0;
+  margin: 24px 0;
 }
 
 .checkbox-group label {
-  display: block;
-  margin-bottom: 15px;
-  color: #cbd5e1;
+  font-family: 'Cinzel', serif;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(212, 164, 55, 0.25);
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
-.checkbox-group input[type="checkbox"] {
-  margin-right: 10px;
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
+.checkbox-group label:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(212, 164, 55, 0.5);
 }
 
+.checkbox-group input[type='checkbox'] {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkbox-group strong {
+  color: var(--gold-light);
+}
+
+/* Info text - Scrollwork annotation */
 .info-text {
-  color: #94a3b8;
+  font-family: 'Cinzel', serif;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   text-align: center;
-  margin: 15px 0;
+  margin: 16px 0;
+  font-style: italic;
+  letter-spacing: 0.03em;
 }
 
+/* Section title - Chapter heading */
 .section-title {
-  font-size: 1.3rem;
-  margin-bottom: 15px;
-  color: #fff;
-  font-weight: 600;
+  font-family: 'MedievalSharp', 'Cinzel', serif;
+  font-size: 1.25rem;
+  margin-bottom: 16px;
+  color: var(--gold-light);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Wheel Picker Styles */
+/* Wheel Picker Styles - Medieval selection wheel */
 .wheel-picker-container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin: 15px 0;
+  gap: 16px;
 }
 
 .wheel-picker-row {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
+  justify-content: center;
 }
 
 .wheel-window {
   position: relative;
-  flex: 1;
-  height: 50px;
-  border-radius: 8px;
-  border: 1px solid #334155;
-  background: rgba(30, 41, 59, 0.8);
   display: flex;
   align-items: center;
-  padding: 0 50px 0 12px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(180deg, rgba(35, 25, 15, 0.95) 0%, rgba(25, 18, 10, 0.98) 100%);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 20px 24px;
+  min-width: 280px;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
 }
 
-.wheel-window:focus-visible {
+.wheel-window:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
+  border-color: var(--gold-light);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(212, 164, 55, 0.3),
+    inset 0 0 30px rgba(0, 0, 0, 0.4);
 }
 
 .wheel-window-content {
   flex: 1;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wheel-picker-window {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 2px solid var(--gold);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, rgba(35, 25, 15, 0.95) 0%, rgba(25, 18, 10, 0.98) 100%);
+}
+
+.wheel-picker {
+  max-height: 260px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wheel-picker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 62px;
+  margin-top: -31px;
+  border-top: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(212, 164, 55, 0.1) 0%, rgba(212, 164, 55, 0.05) 100%);
+}
+
+.wheel-option {
+  font-family: 'Cinzel', serif;
+  padding: 18px 20px;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.wheel-option.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wheel-option h4 {
+  margin-bottom: 4px;
+  color: var(--gold-light);
+}
+
+.wheel-option small {
+  color: var(--text-secondary);
+}
+
+.wheel-option .picker-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  overflow: hidden;
+  gap: 8px;
 }
 
 .picker-character-name {
-  font-size: 1.05rem;
+  font-family: 'MedievalSharp', 'Cinzel', serif;
+  font-size: 1.15rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--gold-light);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .picker-allegiance {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 4px;
   flex-shrink: 0;
   margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid;
 }
 
 .picker-allegiance.good {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
+  background: linear-gradient(180deg, rgba(42, 74, 107, 0.8) 0%, rgba(26, 58, 82, 0.9) 100%);
+  color: #a0c4e8;
+  border-color: #4a7a9f;
 }
 
 .picker-allegiance.evil {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
+  background: linear-gradient(180deg, rgba(107, 28, 42, 0.8) 0%, rgba(74, 19, 32, 0.9) 100%);
+  color: #e8a0a8;
+  border-color: #9f4a5a;
 }
 
 .picker-taken-badge {
+  font-family: 'Cinzel', serif;
   font-size: 0.7rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin-left: 8px;
   flex-shrink: 0;
+  font-style: italic;
 }
 
+/* Wheel scroll track - Medieval arrow buttons */
 .wheel-scroll-track {
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  bottom: 1px;
-  width: 42px;
-  border-left: 1px solid #334155;
-  background: rgba(30, 41, 59, 0.6);
-  border-radius: 0 7px 7px 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 4px;
+  margin-left: 16px;
 }
 
 .wheel-scroll-btn {
-  flex: 1;
-  border: none;
-  background: transparent;
-  color: #94a3b8;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--gold);
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--wood-medium) 0%, var(--wood-dark) 100%);
+  color: var(--gold-light);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  min-height: 50%;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .wheel-scroll-btn:disabled {
@@ -509,52 +946,122 @@ body {
 }
 
 .wheel-scroll-icon {
-  width: 14px;
-  height: 14px;
-}
-
-.wheel-scroll-btn:first-child::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 8px;
-  right: 8px;
-  height: 1px;
-  background: rgba(51, 65, 85, 0.8);
+  width: 16px;
+  height: 16px;
 }
 
 .wheel-scroll-btn:hover:not(:disabled) {
-  background: rgba(102, 126, 234, 0.15);
-  color: #fff;
+  background: linear-gradient(180deg, #6a4a30 0%, var(--wood-medium) 100%);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(212, 164, 55, 0.2);
 }
 
 .wheel-scroll-btn:focus-visible {
   outline: none;
-  background: rgba(102, 126, 234, 0.2);
-  color: #fff;
+  border-color: var(--gold-light);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(212, 164, 55, 0.3);
 }
 
+.wheel-scroll-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Current selection - Chosen champion */
 .current-selection {
+  font-family: 'Cinzel', serif;
   text-align: center;
-  padding: 12px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid #10b981;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  color: #6ee7b7;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(45, 90, 61, 0.25) 0%, rgba(45, 90, 61, 0.15) 100%);
+  border: 2px solid rgba(45, 90, 61, 0.6);
+  border-radius: 6px;
+  margin-bottom: 18px;
+  margin-top: 18px;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
 }
 
 .current-selection strong {
-  color: #fff;
+  color: var(--gold-light);
+  font-weight: 700;
 }
 
+/* Responsive design */
 @media (max-width: 375px) {
+  .room-code {
+    width: 160px;
+    height: 160px;
+    padding: 20px;
+  }
+
   .room-code-value {
-    font-size: 2.5rem;
-    letter-spacing: 6px;
+    font-size: 1.9rem;
+    letter-spacing: 0.2rem;
   }
 
   .header h1 {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
+
+  .container {
+    padding: 24px;
+  }
+
+  .wheel-window {
+    min-width: 240px;
+    padding: 16px 18px;
+  }
+
+  .picker-character-name {
+    font-size: 1rem;
+  }
+}
+
+/* Decorative divider */
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 24px 0;
+  position: relative;
+}
+
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--wood-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-light) 100%);
+  border-radius: 4px;
+  border: 2px solid var(--wood-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+}
+
+/* Selection colors */
+::selection {
+  background: rgba(212, 164, 55, 0.4);
+  color: var(--text-primary);
 }
