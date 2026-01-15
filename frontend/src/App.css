@@ -157,7 +157,7 @@ body::after {
 
 .header h1 {
   font-family: 'MedievalSharp', 'Cinzel', serif;
-  font-size: 2.4rem;
+  font-size: 1.9rem;
   margin-bottom: 8px;
   letter-spacing: 0.08em;
   color: var(--gold-light);
@@ -446,9 +446,23 @@ body::after {
 }
 
 /* Player list - Medieval roster */
+.player-list-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.player-list-wrapper.single-column .player-list {
+  width: 100%;
+}
+
+.player-list-wrapper.two-columns .player-list {
+  width: 50%;
+}
+
 .player-list {
   list-style: none;
-  margin-top: 16px;
+  flex: 1;
 }
 
 .player-item {
@@ -461,8 +475,36 @@ body::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   transition: all 0.2s ease;
+}
+
+.two-columns .player-item {
+  padding: 10px 10px;
+  gap: 6px;
+}
+
+.two-columns .player-name {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.two-columns .host-badge,
+.two-columns .character-badge {
+  padding: 3px 8px;
+  font-size: 0.65rem;
+}
+
+.two-columns .kick-btn {
+  width: 24px;
+  height: 24px;
+}
+
+.two-columns .kick-btn svg {
+  width: 12px;
+  height: 12px;
 }
 
 .player-item:hover {
@@ -1029,6 +1071,211 @@ body::after {
 }
 
 /* Responsive design */
+@media (max-width: 480px) {
+  /* App and container */
+  .app {
+    min-height: auto;
+    padding: 16px 12px 24px;
+  }
+
+  .container {
+    flex: 0;
+    padding: 20px 16px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+
+  .header p {
+    font-size: 0.85rem;
+  }
+
+  .header::after {
+    width: 40px;
+    height: 8px;
+    bottom: -5px;
+  }
+
+  /* Home image */
+  .home-image {
+    margin-bottom: 20px;
+  }
+
+  .home-image img {
+    max-width: 65%;
+  }
+
+  /* Buttons */
+  .button {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+
+  .button + .button {
+    margin-top: 12px;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Input fields */
+  .input-group {
+    margin-bottom: 16px;
+  }
+
+  .input-group label {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .input-group input {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  /* Section titles */
+  .section-title {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  /* Info text */
+  .info-text {
+    font-size: 0.8rem;
+    margin: 12px 0;
+  }
+
+  /* Room code seal */
+  .room-code {
+    width: 160px;
+    height: 160px;
+    padding: 20px;
+    margin: 16px auto;
+  }
+
+  .room-code-label {
+    font-size: 0.65rem;
+  }
+
+  .room-code-value {
+    font-size: 1.9rem;
+    letter-spacing: 0.2rem;
+  }
+
+  /* Player list */
+  .player-list-wrapper {
+    margin-top: 12px;
+  }
+
+  .player-item {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .player-name {
+    font-size: 0.9rem;
+  }
+
+  .host-badge,
+  .character-badge {
+    padding: 3px 10px;
+    font-size: 0.65rem;
+  }
+
+  /* Checkbox group */
+  .checkbox-group {
+    margin: 16px 0;
+  }
+
+  .checkbox-group label {
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
+
+  .checkbox-group input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Wheel picker */
+  .wheel-picker-container {
+    margin-bottom: 18px;
+  }
+
+  .wheel-window {
+    padding: 16px 18px;
+    min-width: 220px;
+  }
+
+  .picker-character-name {
+    font-size: 1rem;
+  }
+
+  .picker-allegiance {
+    font-size: 0.6rem;
+    padding: 4px 10px;
+  }
+
+  .wheel-scroll-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Current selection */
+  .current-selection {
+    padding: 10px;
+    margin: 14px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Reveal card */
+  .reveal-card {
+    padding: 24px 20px;
+  }
+
+  .reveal-character {
+    font-size: 1.6rem;
+  }
+
+  .reveal-allegiance {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+
+  .reveal-message {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+
+  .revealed-players {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .revealed-players h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .revealed-player {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+}
+
 @media (max-width: 375px) {
   .room-code {
     width: 160px;
@@ -1042,7 +1289,7 @@ body::after {
   }
 
   .header h1 {
-    font-size: 1.9rem;
+    font-size: 1.3rem;
   }
 
   .container {

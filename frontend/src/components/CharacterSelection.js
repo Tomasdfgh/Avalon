@@ -47,6 +47,9 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
         if (charIndex >= 0) {
           setCurrentIndex(charIndex);
         }
+      } else {
+        // Clear selection if server has no character role (e.g., after back to lobby)
+        setSelectedCharacter(null);
       }
 
       // Navigate based on room status
@@ -218,8 +221,13 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
 
         <div className="card">
           <h2 className="section-title">Players Ready</h2>
-          <ul className="player-list">
-            {room?.players?.map((player) => (
+          {(() => {
+            const players = room?.players || [];
+            const firstColumn = players.slice(0, 5);
+            const secondColumn = players.slice(5);
+            const hasTwoColumns = secondColumn.length > 0;
+
+            const renderPlayer = (player) => (
               <li key={player.id} className="player-item">
                 <span className="player-name">{player.player_name}</span>
                 <div className="player-actions">
@@ -241,8 +249,21 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
                   )}
                 </div>
               </li>
-            ))}
-          </ul>
+            );
+
+            return (
+              <div className={`player-list-wrapper ${hasTwoColumns ? 'two-columns' : 'single-column'}`}>
+                <ul className="player-list">
+                  {firstColumn.map(renderPlayer)}
+                </ul>
+                {hasTwoColumns && (
+                  <ul className="player-list">
+                    {secondColumn.map(renderPlayer)}
+                  </ul>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         <div className="card">
