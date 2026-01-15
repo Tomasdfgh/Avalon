@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getRoom, getAvailableCharacters, selectCharacter, startGame } from '../services/api';
 
 function CharacterSelection({ navigateTo, sessionData }) {
@@ -9,7 +9,7 @@ function CharacterSelection({ navigateTo, sessionData }) {
   const [pickerValue, setPickerValue] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const pickerRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const fetchData = useCallback(async () => {
     try {
@@ -26,6 +26,18 @@ function CharacterSelection({ navigateTo, sessionData }) {
       if (currentPlayer?.character_role) {
         setSelectedCharacter(currentPlayer.character_role);
         setPickerValue(currentPlayer.character_role);
+
+        // Set the index to the current character
+        const goodChars = charsData?.available_characters?.good || [];
+        const evilChars = charsData?.available_characters?.evil || [];
+        const allChars = [
+          ...goodChars.map(c => ({ name: c, allegiance: 'Good' })),
+          ...evilChars.map(c => ({ name: c, allegiance: 'Evil' }))
+        ];
+        const charIndex = allChars.findIndex(c => c.name === currentPlayer.character_role);
+        if (charIndex >= 0) {
+          setCurrentIndex(charIndex);
+        }
       }
 
       // Navigate to reveal if game started
@@ -49,6 +61,21 @@ function CharacterSelection({ navigateTo, sessionData }) {
     const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
   }, [roomCode, navigateTo, fetchData]);
+
+  // Initialize picker value when characters load and no selection has been made
+  useEffect(() => {
+    if (availableCharacters && !pickerValue && !selectedCharacter) {
+      const goodChars = availableCharacters?.available_characters?.good || [];
+      const evilChars = availableCharacters?.available_characters?.evil || [];
+      const allChars = [
+        ...goodChars.map(c => ({ name: c, allegiance: 'Good' })),
+        ...evilChars.map(c => ({ name: c, allegiance: 'Evil' }))
+      ];
+      if (allChars.length > 0) {
+        setPickerValue(allChars[0].name);
+      }
+    }
+  }, [availableCharacters, pickerValue, selectedCharacter]);
 
   const handleConfirmSelection = async () => {
     if (!pickerValue) {
@@ -114,6 +141,50 @@ function CharacterSelection({ navigateTo, sessionData }) {
     ...evilChars.map(c => ({ name: c, allegiance: 'Evil' }))
   ];
 
+  const currentChar = allCharacters[currentIndex] || { name: '', allegiance: '' };
+  const isTaken = isCharacterTaken(currentChar.name);
+
+  const handlePrev = () => {
+    setCurrentIndex(prev => {
+      const newIndex = prev <= 0 ? allCharacters.length - 1 : prev - 1;
+      const char = allCharacters[newIndex];
+      if (!isCharacterTaken(char.name)) {
+        setPickerValue(char.name);
+      }
+      return newIndex;
+    });
+  };
+
+  const handleNext = () => {
+    setCurrentIndex(prev => {
+      const newIndex = prev >= allCharacters.length - 1 ? 0 : prev + 1;
+      const char = allCharacters[newIndex];
+      if (!isCharacterTaken(char.name)) {
+        setPickerValue(char.name);
+      }
+      return newIndex;
+    });
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handlePrev();
+    } else {
+      handleNext();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      handlePrev();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      handleNext();
+    }
+  };
+
   return (
     <div className="app">
       <div className="container">
@@ -144,24 +215,48 @@ function CharacterSelection({ navigateTo, sessionData }) {
           </p>
 
           <div className="wheel-picker-container">
-            <div className="wheel-picker-highlight"></div>
-            <div className="wheel-picker" ref={pickerRef}>
-              {allCharacters.map((char) => {
-                const taken = isCharacterTaken(char.name);
-                return (
-                  <div
-                    key={char.name}
-                    className={`wheel-picker-item ${pickerValue === char.name ? 'selected' : ''} ${taken ? 'taken' : ''} ${char.allegiance.toLowerCase()}`}
-                    onClick={() => !taken && setPickerValue(char.name)}
+            <div className="wheel-picker-row">
+              <div
+                className="wheel-window"
+                tabIndex={0}
+                role="spinbutton"
+                aria-valuenow={currentIndex + 1}
+                aria-valuemin={1}
+                aria-valuemax={allCharacters.length}
+                aria-valuetext={currentChar.name}
+                onWheel={handleWheel}
+                onKeyDown={handleKeyDown}
+              >
+                <div className="wheel-window-content">
+                  <span className="picker-character-name">{currentChar.name}</span>
+                  <span className={`picker-allegiance ${currentChar.allegiance.toLowerCase()}`}>
+                    {currentChar.allegiance}
+                  </span>
+                  {isTaken && <span className="picker-taken-badge">(Taken)</span>}
+                </div>
+                <div className="wheel-scroll-track">
+                  <button
+                    type="button"
+                    className="wheel-scroll-btn"
+                    onClick={handlePrev}
+                    aria-label="Previous character"
                   >
-                    <span className="picker-character-name">{char.name}</span>
-                    <span className={`picker-allegiance ${char.allegiance.toLowerCase()}`}>
-                      {char.allegiance}
-                    </span>
-                    {taken && <span className="picker-taken">(Taken)</span>}
-                  </div>
-                );
-              })}
+                    <svg className="wheel-scroll-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="wheel-scroll-btn"
+                    onClick={handleNext}
+                    aria-label="Next character"
+                  >
+                    <svg className="wheel-scroll-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

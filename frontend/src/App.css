@@ -398,94 +398,63 @@ body {
 
 /* Wheel Picker Styles */
 .wheel-picker-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 15px 0;
+}
+
+.wheel-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.wheel-window {
   position: relative;
-  height: 300px;
-  margin: 20px 0;
-  border-radius: 12px;
-  overflow: hidden;
-  background: rgba(30, 41, 59, 0.4);
+  flex: 1;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: rgba(30, 41, 59, 0.8);
+  display: flex;
+  align-items: center;
+  padding: 0 50px 0 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.wheel-picker-highlight {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 60px;
-  transform: translateY(-50%);
-  background: rgba(102, 126, 234, 0.15);
-  border-top: 2px solid #667eea;
-  border-bottom: 2px solid #667eea;
-  pointer-events: none;
-  z-index: 1;
+.wheel-window:focus-visible {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
 }
 
-.wheel-picker {
-  height: 100%;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  padding: 120px 0;
-}
-
-.wheel-picker::-webkit-scrollbar {
-  width: 6px;
-}
-
-.wheel-picker::-webkit-scrollbar-track {
-  background: rgba(30, 41, 59, 0.4);
-}
-
-.wheel-picker::-webkit-scrollbar-thumb {
-  background: #667eea;
-  border-radius: 3px;
-}
-
-.wheel-picker-item {
+.wheel-window-content {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  height: 60px;
-  scroll-snap-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-left: 4px solid transparent;
-}
-
-.wheel-picker-item:hover:not(.taken) {
-  background: rgba(102, 126, 234, 0.1);
-}
-
-.wheel-picker-item.selected {
-  background: rgba(102, 126, 234, 0.25);
-  border-left-color: #667eea;
-}
-
-.wheel-picker-item.taken {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.wheel-picker-item.good {
-  border-right: 3px solid #3b82f6;
-}
-
-.wheel-picker-item.evil {
-  border-right: 3px solid #ef4444;
+  overflow: hidden;
 }
 
 .picker-character-name {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .picker-allegiance {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 12px;
-  margin-left: 10px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
 .picker-allegiance.good {
@@ -498,10 +467,70 @@ body {
   color: #f87171;
 }
 
-.picker-taken {
-  font-size: 0.8rem;
+.picker-taken-badge {
+  font-size: 0.7rem;
   color: #94a3b8;
-  margin-left: 10px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.wheel-scroll-track {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  width: 42px;
+  border-left: 1px solid #334155;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 0 7px 7px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wheel-scroll-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 50%;
+}
+
+.wheel-scroll-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.wheel-scroll-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.wheel-scroll-btn:first-child::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: rgba(51, 65, 85, 0.8);
+}
+
+.wheel-scroll-btn:hover:not(:disabled) {
+  background: rgba(102, 126, 234, 0.15);
+  color: #fff;
+}
+
+.wheel-scroll-btn:focus-visible {
+  outline: none;
+  background: rgba(102, 126, 234, 0.2);
+  color: #fff;
 }
 
 .current-selection {
