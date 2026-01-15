@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getPlayerReveal } from '../services/api';
+import { getPlayerReveal, resetGame, getRoom } from '../services/api';
 
 function Reveal({ navigateTo, sessionData, clearSession }) {
-  const { playerId, playerName } = sessionData;
+  const { playerId, playerName, roomCode, isHost } = sessionData;
   const [reveals, setReveals] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -14,10 +14,27 @@ function Reveal({ navigateTo, sessionData, clearSession }) {
       setReveals(data.reveals);
       setLoading(false);
     } catch (err) {
+      // If game was reset, redirect to character selection
+      if (err.response?.data?.error === 'Game has not started yet') {
+        navigateTo('characters');
+        return;
+      }
       setError(err.response?.data?.error || 'Failed to fetch reveal information');
       setLoading(false);
     }
-  }, [playerId]);
+  }, [playerId, navigateTo]);
+
+  // Poll for game reset (non-host players)
+  const checkGameStatus = useCallback(async () => {
+    try {
+      const data = await getRoom(roomCode);
+      if (data.room.status === 'character_selection') {
+        navigateTo('characters');
+      }
+    } catch (err) {
+      // Ignore errors
+    }
+  }, [roomCode, navigateTo]);
 
   useEffect(() => {
     if (!playerId) {
@@ -25,7 +42,11 @@ function Reveal({ navigateTo, sessionData, clearSession }) {
       return;
     }
     fetchReveal();
-  }, [playerId, navigateTo, fetchReveal]);
+
+    // Poll for game reset every 2 seconds
+    const interval = setInterval(checkGameStatus, 2000);
+    return () => clearInterval(interval);
+  }, [playerId, navigateTo, fetchReveal, checkGameStatus]);
 
   const handleReveal = () => {
     setIsRevealed(true);
@@ -33,6 +54,17 @@ function Reveal({ navigateTo, sessionData, clearSession }) {
 
   const handleBackToHome = () => {
     clearSession();
+  };
+
+  const handleNewGame = async () => {
+    setLoading(true);
+    try {
+      await resetGame(roomCode, playerId);
+      navigateTo('characters');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to reset game');
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -112,6 +144,17 @@ function Reveal({ navigateTo, sessionData, clearSession }) {
           <p style={{ marginBottom: '15px', lineHeight: '1.6' }}>
             Keep this information secret! The physical board game can now begin.
           </p>
+
+          {isHost && (
+            <button
+              className="button button-primary"
+              onClick={handleNewGame}
+              style={{ marginBottom: '10px' }}
+            >
+              New Game
+            </button>
+          )}
+
           <button
             className="button button-secondary"
             onClick={handleBackToHome}

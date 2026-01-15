@@ -216,6 +216,26 @@ def get_player_reveal(player_id):
         return jsonify({'error': str(e)}), 500
 
 
+@api.route('/rooms/<room_code>/reset', methods=['POST'])
+def reset_game(room_code):
+    """Reset game back to character selection (host only)."""
+    try:
+        data = request.json
+        player_id = data.get('player_id')
+
+        room, error = storage.reset_game(room_code, player_id)
+
+        if error:
+            status_code = 404 if error == 'Room not found' else 403
+            return jsonify({'error': error}), status_code
+
+        room_data = storage.get_room_with_players(room_code)
+        return jsonify({'room': room_data}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @api.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint."""

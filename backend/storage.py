@@ -147,11 +147,15 @@ def select_character(player_id, character):
     if room['status'] != 'character_selection':
         return None, 'Character selection is not active'
 
-    # Check if character is already taken
-    for pid in room['player_ids']:
-        p = players[pid]
-        if p['character_role'] == character and p['id'] != player_id:
-            return None, 'Character already selected by another player'
+    # Filler roles can be selected by multiple players
+    filler_roles = ['Loyal Servant', 'Minion of Mordred']
+
+    # Check if character is already taken (only for unique/special characters)
+    if character not in filler_roles:
+        for pid in room['player_ids']:
+            p = players[pid]
+            if p['character_role'] == character and p['id'] != player_id:
+                return None, 'Character already selected by another player'
 
     player['character_role'] = character
     return player, None
@@ -197,3 +201,22 @@ def get_room_by_player_id(player_id):
         if room['id'] == player['room_id']:
             return room
     return None
+
+
+def reset_game(room_code, player_id):
+    """Reset game back to character selection (host only)."""
+    room = rooms.get(room_code)
+    if not room:
+        return None, 'Room not found'
+
+    if room['host_player_id'] != player_id:
+        return None, 'Only the host can reset the game'
+
+    # Clear all player character selections
+    for pid in room['player_ids']:
+        players[pid]['character_role'] = None
+
+    # Reset room status to character selection
+    room['status'] = 'character_selection'
+
+    return room, None

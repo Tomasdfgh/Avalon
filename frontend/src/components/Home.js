@@ -65,7 +65,7 @@ function Home({ navigateTo }) {
   if (mode === null) {
     return (
       <div className="app">
-        <div className="container">
+        <div className="container home-container">
           <div className="header">
             <h1>Avalon At Tom's</h1>
           </div>
@@ -74,19 +74,21 @@ function Home({ navigateTo }) {
             <img src="/avalon_helper.png" alt="Avalon At Tom's" />
           </div>
 
-          <button
-            className="button button-primary"
-            onClick={() => setMode('create')}
-          >
-            Create Room
-          </button>
+          <div className="home-actions">
+            <button
+              className="button button-primary"
+              onClick={() => setMode('create')}
+            >
+              Create Room
+            </button>
 
-          <button
-            className="button button-secondary"
-            onClick={() => setMode('join')}
-          >
-            Join Room
-          </button>
+            <button
+              className="button button-secondary"
+              onClick={() => setMode('join')}
+            >
+              Join Room
+            </button>
+          </div>
         </div>
       </div>
     );

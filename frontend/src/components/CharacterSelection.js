@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getRoom, getAvailableCharacters, selectCharacter, startGame } from '../services/api';
 
 function CharacterSelection({ navigateTo, sessionData }) {
@@ -6,8 +6,10 @@ function CharacterSelection({ navigateTo, sessionData }) {
   const [room, setRoom] = useState(null);
   const [availableCharacters, setAvailableCharacters] = useState(null);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [pickerValue, setPickerValue] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const pickerRef = useRef(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -23,6 +25,7 @@ function CharacterSelection({ navigateTo, sessionData }) {
       const currentPlayer = roomData.room.players.find(p => p.id === playerId);
       if (currentPlayer?.character_role) {
         setSelectedCharacter(currentPlayer.character_role);
+        setPickerValue(currentPlayer.character_role);
       }
 
       // Navigate to reveal if game started
@@ -47,13 +50,18 @@ function CharacterSelection({ navigateTo, sessionData }) {
     return () => clearInterval(interval);
   }, [roomCode, navigateTo, fetchData]);
 
-  const handleSelectCharacter = async (character) => {
+  const handleConfirmSelection = async () => {
+    if (!pickerValue) {
+      setError('Please select a character');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      await selectCharacter(playerId, character);
-      setSelectedCharacter(character);
+      await selectCharacter(playerId, pickerValue);
+      setSelectedCharacter(pickerValue);
       await fetchData();
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to select character');
@@ -75,6 +83,10 @@ function CharacterSelection({ navigateTo, sessionData }) {
   };
 
   const isCharacterTaken = (character) => {
+    const fillerRoles = ['Loyal Servant', 'Minion of Mordred'];
+    if (fillerRoles.includes(character)) {
+      return false;
+    }
     return availableCharacters?.selected_characters?.includes(character) &&
            character !== selectedCharacter;
   };
@@ -95,6 +107,12 @@ function CharacterSelection({ navigateTo, sessionData }) {
 
   const goodChars = availableCharacters?.available_characters?.good || [];
   const evilChars = availableCharacters?.available_characters?.evil || [];
+
+  // Combine all characters with their allegiance
+  const allCharacters = [
+    ...goodChars.map(c => ({ name: c, allegiance: 'Good' })),
+    ...evilChars.map(c => ({ name: c, allegiance: 'Evil' }))
+  ];
 
   return (
     <div className="app">
@@ -121,45 +139,45 @@ function CharacterSelection({ navigateTo, sessionData }) {
         </div>
 
         <div className="card">
-          <h2 className="section-title">Good Characters</h2>
           <p className="info-text">
-            Need {availableCharacters?.available_characters?.good_count} Good players
+            Need {availableCharacters?.available_characters?.good_count} Good, {availableCharacters?.available_characters?.evil_count} Evil
           </p>
-          <div className="character-grid">
-            {goodChars.map((char) => (
-              <button
-                key={char}
-                className={`character-button ${selectedCharacter === char ? 'selected' : ''}`}
-                onClick={() => handleSelectCharacter(char)}
-                disabled={isCharacterTaken(char) || loading}
-              >
-                <span className="character-name">{char}</span>
-                <span className="character-allegiance">Good</span>
-                {isCharacterTaken(char) && ' (Taken)'}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        <div className="card">
-          <h2 className="section-title">Evil Characters</h2>
-          <p className="info-text">
-            Need {availableCharacters?.available_characters?.evil_count} Evil players
-          </p>
-          <div className="character-grid">
-            {evilChars.map((char) => (
-              <button
-                key={char}
-                className={`character-button ${selectedCharacter === char ? 'selected' : ''}`}
-                onClick={() => handleSelectCharacter(char)}
-                disabled={isCharacterTaken(char) || loading}
-              >
-                <span className="character-name">{char}</span>
-                <span className="character-allegiance">Evil</span>
-                {isCharacterTaken(char) && ' (Taken)'}
-              </button>
-            ))}
+          <div className="wheel-picker-container">
+            <div className="wheel-picker-highlight"></div>
+            <div className="wheel-picker" ref={pickerRef}>
+              {allCharacters.map((char) => {
+                const taken = isCharacterTaken(char.name);
+                return (
+                  <div
+                    key={char.name}
+                    className={`wheel-picker-item ${pickerValue === char.name ? 'selected' : ''} ${taken ? 'taken' : ''} ${char.allegiance.toLowerCase()}`}
+                    onClick={() => !taken && setPickerValue(char.name)}
+                  >
+                    <span className="picker-character-name">{char.name}</span>
+                    <span className={`picker-allegiance ${char.allegiance.toLowerCase()}`}>
+                      {char.allegiance}
+                    </span>
+                    {taken && <span className="picker-taken">(Taken)</span>}
+                  </div>
+                );
+              })}
+            </div>
           </div>
+
+          {selectedCharacter && (
+            <div className="current-selection">
+              Current: <strong>{selectedCharacter}</strong>
+            </div>
+          )}
+
+          <button
+            className={`button button-primary ${(!pickerValue || loading) ? 'button-disabled' : ''}`}
+            onClick={handleConfirmSelection}
+            disabled={!pickerValue || loading}
+          >
+            {loading ? 'Selecting...' : 'Confirm Selection'}
+          </button>
         </div>
 
         {isHost && (

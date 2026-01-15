@@ -52,4 +52,9 @@ export const getPlayerReveal = async (playerId) => {
   return response.data;
 };
 
+export const resetGame = async (roomCode, playerId) => {
+  const response = await api.post(`/rooms/${roomCode}/reset`, { player_id: playerId });
+  return response.data;
+};
+
 export default api;
