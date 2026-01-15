@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getRoom, getAvailableCharacters, selectCharacter, startGame } from '../services/api';
 
-function CharacterSelection({ navigateTo, sessionData }) {
+function CharacterSelection({ navigateTo, sessionData, clearSession }) {
   const { roomCode, playerId, playerName, isHost } = sessionData;
   const [room, setRoom] = useState(null);
   const [availableCharacters, setAvailableCharacters] = useState(null);
@@ -14,7 +14,7 @@ function CharacterSelection({ navigateTo, sessionData }) {
   const fetchData = useCallback(async () => {
     try {
       const [roomData, charsData] = await Promise.all([
-        getRoom(roomCode),
+        getRoom(roomCode, playerId),
         getAvailableCharacters(roomCode)
       ]);
 
@@ -109,15 +109,6 @@ function CharacterSelection({ navigateTo, sessionData }) {
     }
   };
 
-  const isCharacterTaken = (character) => {
-    const fillerRoles = ['Loyal Servant', 'Minion of Mordred'];
-    if (fillerRoles.includes(character)) {
-      return false;
-    }
-    return availableCharacters?.selected_characters?.includes(character) &&
-           character !== selectedCharacter;
-  };
-
   const allPlayersReady = () => {
     return room?.players?.every(p => p.character_role !== null);
   };
@@ -142,15 +133,12 @@ function CharacterSelection({ navigateTo, sessionData }) {
   ];
 
   const currentChar = allCharacters[currentIndex] || { name: '', allegiance: '' };
-  const isTaken = isCharacterTaken(currentChar.name);
 
   const handlePrev = () => {
     setCurrentIndex(prev => {
       const newIndex = prev <= 0 ? allCharacters.length - 1 : prev - 1;
       const char = allCharacters[newIndex];
-      if (!isCharacterTaken(char.name)) {
-        setPickerValue(char.name);
-      }
+      setPickerValue(char.name);
       return newIndex;
     });
   };
@@ -159,9 +147,7 @@ function CharacterSelection({ navigateTo, sessionData }) {
     setCurrentIndex(prev => {
       const newIndex = prev >= allCharacters.length - 1 ? 0 : prev + 1;
       const char = allCharacters[newIndex];
-      if (!isCharacterTaken(char.name)) {
-        setPickerValue(char.name);
-      }
+      setPickerValue(char.name);
       return newIndex;
     });
   };
@@ -232,7 +218,6 @@ function CharacterSelection({ navigateTo, sessionData }) {
                   <span className={`picker-allegiance ${currentChar.allegiance.toLowerCase()}`}>
                     {currentChar.allegiance}
                   </span>
-                  {isTaken && <span className="picker-taken-badge">(Taken)</span>}
                 </div>
                 <div className="wheel-scroll-track">
                   <button
@@ -298,6 +283,14 @@ function CharacterSelection({ navigateTo, sessionData }) {
             Waiting for host to start the game...
           </p>
         )}
+
+        <button
+          className="button button-secondary"
+          onClick={clearSession}
+          style={{ marginTop: '20px' }}
+        >
+          Exit Room
+        </button>
       </div>
     </div>
   );

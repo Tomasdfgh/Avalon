@@ -31,7 +31,7 @@ body {
 }
 
 .home-container {
-  padding-top: 10px;
+  padding-top: 40px;
 }
 
 .header {
@@ -66,7 +66,7 @@ body {
 }
 
 .home-image img {
-  max-width: 55%;
+  max-width: 65%;
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
@@ -86,14 +86,15 @@ body {
 
 .home-actions {
   display: flex;
+  flex-direction: column;
   gap: 15px;
+  padding: 0 20px;
 }
 
 .home-actions .button {
-  flex: 1;
-  width: auto;
-  padding: 12px;
-  font-size: 1rem;
+  width: 100%;
+  padding: 16px;
+  font-size: 1.1rem;
   margin-bottom: 0;
 }
 

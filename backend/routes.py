@@ -58,6 +58,11 @@ def join_room(room_code):
 def get_room(room_code):
     """Get room details."""
     try:
+        # Update heartbeat if player_id is provided
+        player_id = request.args.get('player_id', type=int)
+        if player_id:
+            storage.update_player_heartbeat(player_id)
+
         room_data = storage.get_room_with_players(room_code)
         if not room_data:
             return jsonify({'error': 'Room not found'}), 404

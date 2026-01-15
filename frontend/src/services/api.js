@@ -19,8 +19,9 @@ export const joinRoom = async (roomCode, playerName) => {
   return response.data;
 };
 
-export const getRoom = async (roomCode) => {
-  const response = await api.get(`/rooms/${roomCode}`);
+export const getRoom = async (roomCode, playerId = null) => {
+  const params = playerId ? { player_id: playerId } : {};
+  const response = await api.get(`/rooms/${roomCode}`, { params });
   return response.data;
 };
 

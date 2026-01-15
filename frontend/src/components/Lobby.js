@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getRoom, configureRoom } from '../services/api';
 
-function Lobby({ navigateTo, sessionData }) {
+function Lobby({ navigateTo, sessionData, clearSession }) {
   const { roomCode, playerId, isHost } = sessionData;
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ function Lobby({ navigateTo, sessionData }) {
 
   const fetchRoom = useCallback(async () => {
     try {
-      const data = await getRoom(roomCode);
+      const data = await getRoom(roomCode, playerId);
       setRoom(data.room);
       setLoading(false);
 
@@ -31,7 +31,7 @@ function Lobby({ navigateTo, sessionData }) {
       setError(err.response?.data?.error || 'Failed to fetch room');
       setLoading(false);
     }
-  }, [roomCode, navigateTo]);
+  }, [roomCode, playerId, navigateTo]);
 
   useEffect(() => {
     if (!roomCode) {
@@ -151,6 +151,14 @@ function Lobby({ navigateTo, sessionData }) {
             Waiting for host to configure the game...
           </p>
         )}
+
+        <button
+          className="button button-secondary"
+          onClick={clearSession}
+          style={{ marginTop: '20px' }}
+        >
+          Exit Room
+        </button>
       </div>
     </div>
   );

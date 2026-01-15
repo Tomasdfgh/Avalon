@@ -35,9 +35,9 @@ function App() {
     case 'home':
       return <Home navigateTo={navigateTo} />;
     case 'lobby':
-      return <Lobby navigateTo={navigateTo} sessionData={sessionData} />;
+      return <Lobby navigateTo={navigateTo} sessionData={sessionData} clearSession={clearSession} />;
     case 'characters':
-      return <CharacterSelection navigateTo={navigateTo} sessionData={sessionData} />;
+      return <CharacterSelection navigateTo={navigateTo} sessionData={sessionData} clearSession={clearSession} />;
     case 'reveal':
       return <Reveal navigateTo={navigateTo} sessionData={sessionData} clearSession={clearSession} />;
     default:

@@ -27,14 +27,14 @@ function Reveal({ navigateTo, sessionData, clearSession }) {
   // Poll for game reset (non-host players)
   const checkGameStatus = useCallback(async () => {
     try {
-      const data = await getRoom(roomCode);
+      const data = await getRoom(roomCode, playerId);
       if (data.room.status === 'character_selection') {
         navigateTo('characters');
       }
     } catch (err) {
       // Ignore errors
     }
-  }, [roomCode, navigateTo]);
+  }, [roomCode, playerId, navigateTo]);
 
   useEffect(() => {
     if (!playerId) {
