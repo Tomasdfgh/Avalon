@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Home from './components/Home';
 import Lobby from './components/Lobby';
 import CharacterSelection from './components/CharacterSelection';
 import Reveal from './components/Reveal';
+import { leaveRoom } from './services/api';
 import './App.css';
 
 function App() {
@@ -13,6 +14,8 @@ function App() {
     roomCode: null,
     isHost: false
   });
+  const sessionRef = useRef(sessionData);
+  sessionRef.current = sessionData;
 
   const navigateTo = useCallback((page, data = {}) => {
     if (Object.keys(data).length > 0) {
@@ -21,7 +24,15 @@ function App() {
     setCurrentPage(page);
   }, []);
 
-  const clearSession = useCallback(() => {
+  const clearSession = useCallback(async () => {
+    const { roomCode, playerId } = sessionRef.current;
+    if (roomCode && playerId) {
+      try {
+        await leaveRoom(roomCode, playerId);
+      } catch (err) {
+        // Ignore errors - player may already be removed
+      }
+    }
     setSessionData({
       playerId: null,
       playerName: null,

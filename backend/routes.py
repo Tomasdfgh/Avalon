@@ -58,11 +58,6 @@ def join_room(room_code):
 def get_room(room_code):
     """Get room details."""
     try:
-        # Update heartbeat if player_id is provided
-        player_id = request.args.get('player_id', type=int)
-        if player_id:
-            storage.update_player_heartbeat(player_id)
-
         room_data = storage.get_room_with_players(room_code)
         if not room_data:
             return jsonify({'error': 'Room not found'}), 404
@@ -280,6 +275,28 @@ def kick_player(room_code):
 
         room_data = storage.get_room_with_players(room_code)
         return jsonify({'room': room_data}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@api.route('/rooms/<room_code>/leave', methods=['POST'])
+def leave_room(room_code):
+    """Leave the room."""
+    try:
+        data = request.json
+        player_id = data.get('player_id')
+
+        if not player_id:
+            return jsonify({'error': 'player_id is required'}), 400
+
+        room, error = storage.leave_room(room_code, player_id)
+
+        if error:
+            status_code = 404 if error == 'Room not found' else 400
+            return jsonify({'error': error}), status_code
+
+        return jsonify({'success': True}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

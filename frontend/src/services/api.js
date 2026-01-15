@@ -71,4 +71,9 @@ export const backToLobby = async (roomCode, playerId) => {
   return response.data;
 };
 
+export const leaveRoom = async (roomCode, playerId) => {
+  const response = await api.post(`/rooms/${roomCode}/leave`, { player_id: playerId });
+  return response.data;
+};
+
 export default api;
