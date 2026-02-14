@@ -1,8 +1,40 @@
 from flask import Blueprint, request, jsonify
 import storage
+import csv
+import os
+from datetime import datetime, timezone
 from game_logic import get_character_reveals, validate_character_selection, get_available_characters
 
 api = Blueprint('api', __name__)
+
+ROOM_LOG = '/logs/room_logs.csv'
+
+
+def get_client_ip():
+    """Get the real client IP address, handling proxies and load balancers."""
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    if request.headers.get('X-Real-IP'):
+        return request.headers.get('X-Real-IP').strip()
+    if request.headers.get('CF-Connecting-IP'):
+        return request.headers.get('CF-Connecting-IP').strip()
+    return request.remote_addr or 'unknown'
+
+
+def log_room_creation(room_code):
+    """Log a room creation event to CSV."""
+    ip = get_client_ip()
+    timestamp = datetime.now(timezone.utc).isoformat()
+    file_exists = os.path.exists(ROOM_LOG)
+
+    try:
+        with open(ROOM_LOG, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(['timestamp', 'room_code', 'ip'])
+            writer.writerow([timestamp, room_code, ip])
+    except Exception as e:
+        print(f"Failed to write room log: {e}")
 
 
 @api.route('/rooms', methods=['POST'])
@@ -16,6 +48,7 @@ def create_room():
             return jsonify({'error': 'Player name is required'}), 400
 
         room, player = storage.create_room(player_name)
+        log_room_creation(room['room_code'])
         room_data = storage.get_room_with_players(room['room_code'])
 
         return jsonify({
@@ -208,7 +241,7 @@ def get_player_reveal(player_id):
                        for p in players_in_room]
 
         # Get reveal information
-        reveals = get_character_reveals(player['character_role'], all_players)
+        reveals = get_character_reveals(player['character_role'], all_players, player['player_name'])
 
         return jsonify({'reveals': reveals}), 200
 

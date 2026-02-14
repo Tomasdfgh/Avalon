@@ -32,13 +32,14 @@ def is_evil_character(character):
     """Check if a character is on the Evil side."""
     return character in EVIL_CHARACTERS
 
-def get_character_reveals(player_character, all_players):
+def get_character_reveals(player_character, all_players, player_name=None):
     """
     Get the information that should be revealed to a player based on their character.
 
     Args:
         player_character: The character of the player requesting reveals
         all_players: List of dicts with 'player_name' and 'character_role' keys
+        player_name: The name of the player requesting reveals
 
     Returns:
         Dict with revelation information for the player
@@ -75,7 +76,7 @@ def get_character_reveals(player_character, all_players):
 
     elif player_character in ['Assassin', 'Mordred', 'Morgana', 'Minion of Mordred']:
         # All other evil players know each other (except Oberon)
-        allies = [p for p in evil_players_except_oberon if p['character_role'] != player_character]
+        allies = [p for p in evil_players_except_oberon if p['player_name'] != player_name]
         reveals['revealed_players'] = [p['player_name'] for p in allies]
 
         if player_character == 'Assassin':

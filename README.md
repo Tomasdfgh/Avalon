@@ -13,4 +13,4 @@ No more fumbling with cards or accidentally revealing information during setup.
 
 ## Access
 
-**[playavalon.duckdns.org](http://playavalon.duckdns.org)**
+**[avalon.tom-nguyen.ca](https://avalon.tom-nguyen.ca)**
