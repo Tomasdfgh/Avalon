@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createRoom, joinRoom } from '../services/api';
+import { avalonHelperDataUri } from '../assets/avalonHelper';
 
 function Home({ navigateTo }) {
   const [playerName, setPlayerName] = useState('');
@@ -71,7 +72,7 @@ function Home({ navigateTo }) {
           </div>
 
           <div className="home-image">
-            <img src="/avalon_helper.png" alt="Avalon At Tom's" />
+            <img src={avalonHelperDataUri} alt="Avalon At Tom's" />
           </div>
 
           <div className="home-actions">

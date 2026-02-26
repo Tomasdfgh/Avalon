@@ -86,7 +86,9 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
         ...evilChars.map(c => ({ name: c, allegiance: 'Evil' }))
       ];
       if (allChars.length > 0) {
-        setPickerValue(allChars[0].name);
+        const randomIndex = Math.floor(Math.random() * allChars.length);
+        setCurrentIndex(randomIndex);
+        setPickerValue(allChars[randomIndex].name);
       }
     }
   }, [availableCharacters, pickerValue, selectedCharacter]);
@@ -215,6 +217,11 @@ function CharacterSelection({ navigateTo, sessionData, clearSession }) {
         <div className="header">
           <h1>Character Selection</h1>
           <p>Choose your character, {playerName}</p>
+        </div>
+
+        <div className="room-code">
+          <div className="room-code-label">Room Code</div>
+          <div className="room-code-value">{roomCode}</div>
         </div>
 
         {error && <div className="error">{error}</div>}
